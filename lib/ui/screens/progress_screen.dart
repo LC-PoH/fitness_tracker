@@ -136,9 +136,9 @@ class _WeeklyTab extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: AppColors.accent.withOpacity(0.15),
+        color: AppColors.accent.withValues(alpha: 0.15),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.accent.withOpacity(0.4)),
+        border: Border.all(color: AppColors.accent.withValues(alpha: 0.4)),
       ),
       child: Row(
         children: [
@@ -259,7 +259,7 @@ class _BarChart extends StatelessWidget {
                               ? AppColors.border
                               : metGoal
                                   ? barColor
-                                  : barColor.withOpacity(0.4),
+                                  : barColor.withValues(alpha: 0.4),
                           borderRadius: BorderRadius.circular(4),
                           border: isToday ? Border.all(color: barColor, width: 2) : null,
                         ),
@@ -339,7 +339,7 @@ class _AchievementsTab extends StatelessWidget {
             width: 38,
             height: 38,
             decoration: BoxDecoration(
-              color: color.withOpacity(0.15),
+              color: color.withValues(alpha: 0.15),
               borderRadius: BorderRadius.circular(10),
             ),
             child: Icon(icon, color: color, size: 20),
@@ -363,31 +363,42 @@ class _Badge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: earned ? color.withOpacity(0.12) : AppColors.card,
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: earned ? color.withOpacity(0.4) : AppColors.border),
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(
-            earned ? icon : Icons.lock_outline,
-            color: earned ? color : AppColors.textMuted,
-            size: 28,
-          ),
-          const SizedBox(height: 6),
-          Text(
-            label,
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              fontSize: 11,
-              color: earned ? Colors.white : AppColors.textMuted,
-              fontWeight: FontWeight.bold,
+    // Semantics announces badge name and earned/locked status as one node;
+    // ExcludeSemantics on the icon and text prevents double-reading the label
+    return Semantics(
+      label: '$label badge, ${earned ? "earned" : "locked"}',
+      child: Container(
+        decoration: BoxDecoration(
+          color: earned ? color.withValues(alpha: 0.12) : AppColors.card,
+          borderRadius: BorderRadius.circular(14),
+          border: Border.all(color: earned ? color.withValues(alpha: 0.4) : AppColors.border),
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            // Icon is decorative; parent Semantics already covers its meaning
+            ExcludeSemantics(
+              child: Icon(
+                earned ? icon : Icons.lock_outline,
+                color: earned ? color : AppColors.textMuted,
+                size: 28,
+              ),
             ),
-          ),
-        ],
+            const SizedBox(height: 6),
+            // Text is decorative; parent Semantics already covers its meaning
+            ExcludeSemantics(
+              child: Text(
+                label,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 11,
+                  color: earned ? Colors.white : AppColors.textMuted,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

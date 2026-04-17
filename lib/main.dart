@@ -100,5 +100,6 @@ class AppColors {
   static const Color accentPurple = Color(0xFF7C4DFF);
   static const Color accentYellow = Color(0xFFFFD740);
   static const Color textSecondary = Color(0xFF9E9EA8);
-  static const Color textMuted = Color(0xFF5A5A68);
+  // Lightened from #5A5A68 to meet WCAG AA minimum 4.5:1 contrast ratio on dark backgrounds
+  static const Color textMuted = Color(0xFF7A7A8A);
 }

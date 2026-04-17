@@ -49,17 +49,21 @@ class HomeScreen extends StatelessWidget {
                       ],
                     ),
                   ),
-                  Container(
-                    width: 44,
-                    height: 44,
-                    decoration: BoxDecoration(
-                      color: AppColors.card,
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: AppColors.border),
-                    ),
-                    child: const Icon(
-                      Icons.notifications_outlined,
-                      color: Colors.white,
+                  // Semantics label makes this icon-only container readable by screen readers
+                  Semantics(
+                    label: 'Notifications',
+                    child: Container(
+                      width: 44,
+                      height: 44,
+                      decoration: BoxDecoration(
+                        color: AppColors.card,
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: AppColors.border),
+                      ),
+                      child: const Icon(
+                        Icons.notifications_outlined,
+                        color: Colors.white,
+                      ),
                     ),
                   ),
                 ],
@@ -71,7 +75,8 @@ class HomeScreen extends StatelessWidget {
                   gradient: LinearGradient(
                     colors: [
                       AppColors.accent,
-                      AppColors.accent.withOpacity(0.7),
+                      // withValues replaces deprecated withOpacity for precision-safe alpha blending
+                  AppColors.accent.withValues(alpha: 0.7),
                     ],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
@@ -97,6 +102,7 @@ class HomeScreen extends StatelessWidget {
                             '${fitness.steps}',
                             style: TextStyle(
                               color: Colors.white,
+                              // MediaQuery: shrinks step count font on narrow screens (<380px)
                               fontSize: screenWidth > 380 ? 30 : 24,
                               fontWeight: FontWeight.bold,
                             ),
@@ -210,41 +216,46 @@ class HomeScreen extends StatelessWidget {
     Color color,
   ) {
     return Expanded(
-      child: Container(
-        padding: const EdgeInsets.all(12),
-        decoration: BoxDecoration(
-          color: AppColors.card,
-          borderRadius: BorderRadius.circular(14),
-          border: Border.all(color: AppColors.border),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Icon(icon, color: color, size: 20),
-            const SizedBox(height: 8),
-            Text(
-              value,
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
+      // Semantics gives screen readers a single meaningful description of the whole card
+      child: Semantics(
+        label: '$label: $value $unit',
+        child: Container(
+          padding: const EdgeInsets.all(12),
+          decoration: BoxDecoration(
+            color: AppColors.card,
+            borderRadius: BorderRadius.circular(14),
+            border: Border.all(color: AppColors.border),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Icon is decorative here; parent Semantics already describes the card
+              ExcludeSemantics(child: Icon(icon, color: color, size: 20)),
+              const SizedBox(height: 8),
+              Text(
+                value,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
-            ),
-            Text(
-              unit,
-              style: const TextStyle(
-                color: AppColors.textSecondary,
-                fontSize: 11,
+              Text(
+                unit,
+                style: const TextStyle(
+                  color: AppColors.textSecondary,
+                  fontSize: 11,
+                ),
               ),
-            ),
-            Text(
-              label,
-              style: const TextStyle(
-                color: AppColors.textSecondary,
-                fontSize: 11,
+              Text(
+                label,
+                style: const TextStyle(
+                  color: AppColors.textSecondary,
+                  fontSize: 11,
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -293,15 +304,18 @@ class HomeScreen extends StatelessWidget {
         itemBuilder: (context, i) {
           final a = today[i];
           final color = _colorForType(a.type);
-          return Container(
-            width: 140,
-            margin: const EdgeInsets.only(right: 12),
-            padding: const EdgeInsets.all(14),
-            decoration: BoxDecoration(
-              color: color.withOpacity(0.15),
-              borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: color.withOpacity(0.4)),
-            ),
+          // Semantics surfaces activity details to screen readers in one readable announcement
+          return Semantics(
+            label: '${a.name}: ${a.duration} minutes, ${a.calories} calories',
+            child: Container(
+              width: 140,
+              margin: const EdgeInsets.only(right: 12),
+              padding: const EdgeInsets.all(14),
+              decoration: BoxDecoration(
+                color: color.withValues(alpha: 0.15),
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(color: color.withValues(alpha: 0.4)),
+              ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -325,6 +339,7 @@ class HomeScreen extends StatelessWidget {
                   ),
                 ),
               ],
+            ),
             ),
           );
         },
@@ -377,10 +392,14 @@ class _StepsProgressRing extends StatelessWidget {
     final clamped = progress.clamp(0.0, 1.0);
     final percent = (clamped * 100).round();
 
-    return SizedBox(
-      width: 108,
-      height: 108,
-      child: TweenAnimationBuilder<double>(
+    // Semantics announces the numeric progress value so TalkBack/VoiceOver users
+    // get "Steps goal progress: 64 percent" instead of a silent visual ring
+    return Semantics(
+      label: 'Steps goal progress: $percent percent',
+      child: SizedBox(
+        width: 108,
+        height: 108,
+        child: TweenAnimationBuilder<double>(
         tween: Tween(begin: 0, end: clamped),
         duration: const Duration(milliseconds: 600),
         curve: Curves.easeOutCubic,
@@ -394,7 +413,7 @@ class _StepsProgressRing extends StatelessWidget {
                 child: CircularProgressIndicator(
                   value: 1,
                   strokeWidth: 10,
-                  color: Colors.white.withOpacity(0.22),
+                  color: Colors.white.withValues(alpha: 0.22),
                 ),
               ),
               SizedBox(
@@ -411,9 +430,9 @@ class _StepsProgressRing extends StatelessWidget {
                 width: 70,
                 height: 70,
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.14),
+                  color: Colors.white.withValues(alpha: 0.14),
                   shape: BoxShape.circle,
-                  border: Border.all(color: Colors.white.withOpacity(0.28)),
+                  border: Border.all(color: Colors.white.withValues(alpha: 0.28)),
                 ),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -443,6 +462,7 @@ class _StepsProgressRing extends StatelessWidget {
             ],
           );
         },
+      ),
       ),
     );
   }
@@ -503,14 +523,19 @@ class _WaterCard extends StatelessWidget {
             }),
           ),
           const SizedBox(height: 12),
-          LinearProgressIndicator(
-            value: fitness.waterProgress,
-            backgroundColor: AppColors.border,
-            valueColor: const AlwaysStoppedAnimation<Color>(
-              AppColors.accentBlue,
+          // label names the indicator; value gives the current percentage for screen readers
+          Semantics(
+            label: 'Water intake progress',
+            value: '${(fitness.waterProgress * 100).round()} percent',
+            child: LinearProgressIndicator(
+              value: fitness.waterProgress,
+              backgroundColor: AppColors.border,
+              valueColor: const AlwaysStoppedAnimation<Color>(
+                AppColors.accentBlue,
+              ),
+              minHeight: 6,
+              borderRadius: BorderRadius.circular(4),
             ),
-            minHeight: 6,
-            borderRadius: BorderRadius.circular(4),
           ),
           const SizedBox(height: 12),
           Row(

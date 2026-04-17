@@ -126,37 +126,44 @@ class _LogActivityScreenState extends State<LogActivityScreen> {
                     final type = _types[i];
                     final isSelected = type == _selectedType;
                     final color = _colorForType(type);
-                    return GestureDetector(
-                      onTap: () => setState(() => _selectedType = type),
-                      child: Container(
-                        width: 78,
-                        margin: const EdgeInsets.only(right: 10),
-                        decoration: BoxDecoration(
-                          color: isSelected ? color.withOpacity(0.2) : AppColors.card,
-                          borderRadius: BorderRadius.circular(14),
-                          border: Border.all(
-                            color: isSelected ? color : AppColors.border,
-                            width: isSelected ? 2 : 1,
+                    // GestureDetector has no implicit role; Semantics exposes it as a button
+                    // and announces the selected state (e.g. "Running workout type, selected")
+                    return Semantics(
+                      label: '$type workout type${isSelected ? ", selected" : ""}',
+                      button: true,
+                      selected: isSelected,
+                      child: GestureDetector(
+                        onTap: () => setState(() => _selectedType = type),
+                        child: Container(
+                          width: 78,
+                          margin: const EdgeInsets.only(right: 10),
+                          decoration: BoxDecoration(
+                            color: isSelected ? color.withValues(alpha: 0.2) : AppColors.card,
+                            borderRadius: BorderRadius.circular(14),
+                            border: Border.all(
+                              color: isSelected ? color : AppColors.border,
+                              width: isSelected ? 2 : 1,
+                            ),
                           ),
-                        ),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(
-                              _iconForType(type),
-                              color: isSelected ? color : AppColors.textSecondary,
-                              size: 26,
-                            ),
-                            const SizedBox(height: 5),
-                            Text(
-                              type,
-                              style: TextStyle(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                _iconForType(type),
                                 color: isSelected ? color : AppColors.textSecondary,
-                                fontSize: 11,
-                                fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                                size: 26,
                               ),
-                            ),
-                          ],
+                              const SizedBox(height: 5),
+                              Text(
+                                type,
+                                style: TextStyle(
+                                  color: isSelected ? color : AppColors.textSecondary,
+                                  fontSize: 11,
+                                  fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     );
@@ -176,25 +183,32 @@ class _LogActivityScreenState extends State<LogActivityScreen> {
                   final isSelected = intensity == _selectedIntensity;
                   final color = _colorForIntensity(intensity);
                   return Expanded(
-                    child: GestureDetector(
-                      onTap: () => setState(() => _selectedIntensity = intensity),
-                      child: Container(
-                        margin: EdgeInsets.only(right: intensity != _intensities.last ? 8 : 0),
-                        padding: const EdgeInsets.symmetric(vertical: 12),
-                        decoration: BoxDecoration(
-                          color: isSelected ? color.withOpacity(0.18) : AppColors.card,
-                          borderRadius: BorderRadius.circular(12),
-                          border: Border.all(
-                            color: isSelected ? color : AppColors.border,
-                            width: isSelected ? 2 : 1,
+                    // Semantics exposes intensity selection state so screen readers announce
+                    // both the option name and whether it is currently chosen
+                    child: Semantics(
+                      label: '$intensity intensity${isSelected ? ", selected" : ""}',
+                      button: true,
+                      selected: isSelected,
+                      child: GestureDetector(
+                        onTap: () => setState(() => _selectedIntensity = intensity),
+                        child: Container(
+                          margin: EdgeInsets.only(right: intensity != _intensities.last ? 8 : 0),
+                          padding: const EdgeInsets.symmetric(vertical: 12),
+                          decoration: BoxDecoration(
+                            color: isSelected ? color.withValues(alpha: 0.18) : AppColors.card,
+                            borderRadius: BorderRadius.circular(12),
+                            border: Border.all(
+                              color: isSelected ? color : AppColors.border,
+                              width: isSelected ? 2 : 1,
+                            ),
                           ),
-                        ),
-                        child: Center(
-                          child: Text(
-                            intensity,
-                            style: TextStyle(
-                              color: isSelected ? color : AppColors.textSecondary,
-                              fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                          child: Center(
+                            child: Text(
+                              intensity,
+                              style: TextStyle(
+                                color: isSelected ? color : AppColors.textSecondary,
+                                fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                              ),
                             ),
                           ),
                         ),

@@ -39,6 +39,8 @@ class _WorkoutsScreenState extends State<WorkoutsScreen> {
               ),
               child: const Icon(Icons.add, color: Colors.white, size: 20),
             ),
+            // tooltip provides both an accessibility label and a long-press hint for icon-only buttons
+            tooltip: 'Log new workout',
             onPressed: () => Navigator.pushNamed(context, '/log'),
           ),
           const SizedBox(width: 8),
@@ -54,24 +56,31 @@ class _WorkoutsScreenState extends State<WorkoutsScreen> {
               itemBuilder: (context, i) {
                 final f = _filters[i];
                 final isSelected = f == _filter;
-                return GestureDetector(
-                  onTap: () => setState(() => _filter = f),
-                  child: Container(
-                    margin: const EdgeInsets.only(right: 8),
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-                    decoration: BoxDecoration(
-                      color: isSelected ? AppColors.accent : AppColors.card,
-                      borderRadius: BorderRadius.circular(20),
-                      border: Border.all(
-                        color: isSelected ? AppColors.accent : AppColors.border,
+                // Semantics: GestureDetector has no built-in role, so button:true and
+                // selected: expose state to screen readers (e.g. "Running filter, selected")
+                return Semantics(
+                  label: '$f filter${isSelected ? ", selected" : ""}',
+                  button: true,
+                  selected: isSelected,
+                  child: GestureDetector(
+                    onTap: () => setState(() => _filter = f),
+                    child: Container(
+                      margin: const EdgeInsets.only(right: 8),
+                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+                      decoration: BoxDecoration(
+                        color: isSelected ? AppColors.accent : AppColors.card,
+                        borderRadius: BorderRadius.circular(20),
+                        border: Border.all(
+                          color: isSelected ? AppColors.accent : AppColors.border,
+                        ),
                       ),
-                    ),
-                    child: Text(
-                      f,
-                      style: TextStyle(
-                        color: isSelected ? Colors.white : AppColors.textSecondary,
-                        fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-                        fontSize: 13,
+                      child: Text(
+                        f,
+                        style: TextStyle(
+                          color: isSelected ? Colors.white : AppColors.textSecondary,
+                          fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                          fontSize: 13,
+                        ),
                       ),
                     ),
                   ),
@@ -100,18 +109,43 @@ class _WorkoutsScreenState extends State<WorkoutsScreen> {
                 ],
               ),
             )
-          : ListView.builder(
-              padding: const EdgeInsets.fromLTRB(16, 16, 16, 100),
-              itemCount: displayed.length,
-              itemBuilder: (context, index) {
-                return _ActivityCard(
-                  activity: displayed[index],
-                  onDelete: () {
-                    final realIndex = fitness.activities.indexOf(displayed[index]);
-                    if (realIndex != -1) {
-                      context.read<FitnessProvider>().removeActivity(realIndex);
-                    }
-                  },
+          // LayoutBuilder makes the list responsive: phones use ListView, tablets (>=600px)
+          // switch to a 2-column GridView without any screen-size assumptions baked in
+          : LayoutBuilder(
+              builder: (context, constraints) {
+                if (constraints.maxWidth >= 600) {
+                  return GridView.builder(
+                    padding: const EdgeInsets.fromLTRB(16, 16, 16, 100),
+                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      crossAxisSpacing: 12,
+                      mainAxisSpacing: 0,
+                      childAspectRatio: 2.8,
+                    ),
+                    itemCount: displayed.length,
+                    itemBuilder: (context, index) => _ActivityCard(
+                      activity: displayed[index],
+                      onDelete: () {
+                        final realIndex = fitness.activities.indexOf(displayed[index]);
+                        if (realIndex != -1) {
+                          context.read<FitnessProvider>().removeActivity(realIndex);
+                        }
+                      },
+                    ),
+                  );
+                }
+                return ListView.builder(
+                  padding: const EdgeInsets.fromLTRB(16, 16, 16, 100),
+                  itemCount: displayed.length,
+                  itemBuilder: (context, index) => _ActivityCard(
+                    activity: displayed[index],
+                    onDelete: () {
+                      final realIndex = fitness.activities.indexOf(displayed[index]);
+                      if (realIndex != -1) {
+                        context.read<FitnessProvider>().removeActivity(realIndex);
+                      }
+                    },
+                  ),
                 );
               },
             ),
@@ -136,9 +170,14 @@ class _ActivityCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final color = _colorForType(activity.type);
 
-    return Dismissible(
-      key: ObjectKey(activity),
-      direction: DismissDirection.endToStart,
+    // Semantics gives a full description of the card including the swipe-to-delete hint,
+    // since Dismissible's gesture is invisible to screen readers without this label
+    return Semantics(
+      label: '${activity.name}, ${activity.type}, ${activity.intensity} intensity, '
+          '${activity.duration} minutes, ${activity.calories} calories. Swipe left to delete.',
+      child: Dismissible(
+        key: ObjectKey(activity),
+        direction: DismissDirection.endToStart,
       background: Container(
         alignment: Alignment.centerRight,
         padding: const EdgeInsets.only(right: 20),
@@ -164,7 +203,7 @@ class _ActivityCard extends StatelessWidget {
               width: 50,
               height: 50,
               decoration: BoxDecoration(
-                color: color.withOpacity(0.15),
+                color: color.withValues(alpha: 0.15),
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Icon(_iconForType(activity.type), color: color, size: 24),
@@ -224,6 +263,7 @@ class _ActivityCard extends StatelessWidget {
           ],
         ),
       ),
+      ),
     );
   }
 
@@ -276,7 +316,7 @@ class _Tag extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.15),
+        color: color.withValues(alpha: 0.15),
         borderRadius: BorderRadius.circular(6),
       ),
       child: Text(

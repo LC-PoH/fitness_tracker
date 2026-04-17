@@ -15,8 +15,10 @@ class ProfileScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Profile'),
         actions: [
+          // tooltip provides an accessibility label for this icon-only button
           IconButton(
             icon: const Icon(Icons.edit, color: Colors.white),
+            tooltip: 'Edit profile',
             onPressed: () {},
           ),
         ],
@@ -132,7 +134,7 @@ class ProfileScreen extends StatelessWidget {
                       width: 36,
                       height: 36,
                       decoration: BoxDecoration(
-                        color: AppColors.accentPurple.withOpacity(0.15),
+                        color: AppColors.accentPurple.withValues(alpha: 0.15),
                         borderRadius: BorderRadius.circular(10),
                       ),
                       child: const Icon(
@@ -318,7 +320,7 @@ class ProfileScreen extends StatelessWidget {
         width: 36,
         height: 36,
         decoration: BoxDecoration(
-          color: color.withOpacity(0.15),
+          color: color.withValues(alpha: 0.15),
           borderRadius: BorderRadius.circular(10),
         ),
         child: Icon(icon, color: color, size: 18),
