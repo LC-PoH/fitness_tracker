@@ -45,19 +45,30 @@ class ProfileScreen extends StatelessWidget {
                     child: const Center(
                       child: Text(
                         'A',
-                        style: TextStyle(fontSize: 40, color: Colors.white, fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                          fontSize: 40,
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
                   ),
                   const SizedBox(height: 12),
                   const Text(
                     'Arbin Maharjan',
-                    style: TextStyle(color: Colors.white, fontSize: 22, fontWeight: FontWeight.bold),
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                   const SizedBox(height: 4),
                   const Text(
                     'arbinmaharjan995@gmail.com',
-                    style: TextStyle(color: AppColors.textSecondary, fontSize: 13),
+                    style: TextStyle(
+                      color: AppColors.textSecondary,
+                      fontSize: 13,
+                    ),
                   ),
                   const SizedBox(height: 20),
                   Row(
@@ -82,12 +93,27 @@ class ProfileScreen extends StatelessWidget {
                 title: 'My Goals',
                 icon: Icons.flag,
                 children: [
-                  _goalRow(Icons.directions_walk, 'Daily Steps', '${fitness.stepGoal} steps',
-                      AppColors.accent, fitness.stepProgress),
-                  _goalRow(Icons.water_drop, 'Water Intake',
-                      '${fitness.waterGoal.toStringAsFixed(1)} L/day', AppColors.accentBlue, fitness.waterProgress),
-                  _goalRow(Icons.local_fire_department, 'Calorie Burn',
-                      '${fitness.calorieGoal} kcal/day', AppColors.accentYellow, fitness.calorieProgress),
+                  _goalRow(
+                    Icons.directions_walk,
+                    'Daily Steps',
+                    '${fitness.stepGoal} steps',
+                    AppColors.accent,
+                    fitness.stepProgress,
+                  ),
+                  _goalRow(
+                    Icons.water_drop,
+                    'Water Intake',
+                    '${fitness.waterGoal.toStringAsFixed(1)} L/day',
+                    AppColors.accentBlue,
+                    fitness.waterProgress,
+                  ),
+                  _goalRow(
+                    Icons.local_fire_department,
+                    'Calorie Burn',
+                    '${fitness.calorieGoal} kcal/day',
+                    AppColors.accentYellow,
+                    fitness.calorieProgress,
+                  ),
                 ],
               ),
             ),
@@ -109,20 +135,42 @@ class ProfileScreen extends StatelessWidget {
                         color: AppColors.accentPurple.withOpacity(0.15),
                         borderRadius: BorderRadius.circular(10),
                       ),
-                      child: const Icon(Icons.notifications, color: AppColors.accentPurple, size: 18),
+                      child: const Icon(
+                        Icons.notifications,
+                        color: AppColors.accentPurple,
+                        size: 18,
+                      ),
                     ),
-                    title: const Text('Push Notifications', style: TextStyle(color: Colors.white, fontSize: 14)),
+                    title: const Text(
+                      'Push Notifications',
+                      style: TextStyle(color: Colors.white, fontSize: 14),
+                    ),
                     value: fitness.notificationsEnabled,
-                    onChanged: (_) => context.read<FitnessProvider>().toggleNotifications(),
-                    activeColor: AppColors.accent,
+                    onChanged: (_) =>
+                        context.read<FitnessProvider>().toggleNotifications(),
+                    activeThumbColor: AppColors.accent,
                   ),
-                  _settingsTile(Icons.accessibility_new, 'Accessibility', AppColors.accentBlue),
-                  _settingsTile(Icons.lock, 'Privacy & Data', AppColors.accentGreen),
+                  _settingsTile(
+                    Icons.accessibility_new,
+                    'Accessibility',
+                    AppColors.accentBlue,
+                  ),
+                  _settingsTile(
+                    Icons.lock,
+                    'Privacy & Data',
+                    AppColors.accentGreen,
+                  ),
                   _settingsTile(
                     Icons.language,
                     'Language',
                     AppColors.accentYellow,
-                    trailing: const Text('English', style: TextStyle(color: AppColors.textSecondary, fontSize: 13)),
+                    trailing: const Text(
+                      'English',
+                      style: TextStyle(
+                        color: AppColors.textSecondary,
+                        fontSize: 13,
+                      ),
+                    ),
                   ),
                 ],
               ),
@@ -136,12 +184,30 @@ class ProfileScreen extends StatelessWidget {
                 title: 'About',
                 icon: Icons.info,
                 children: [
-                  _settingsTile(Icons.help_outline, 'Help & Support', AppColors.accent),
-                  _settingsTile(Icons.star, 'Rate FitTrack', AppColors.accentYellow),
-                  _settingsTile(Icons.description, 'Terms of Service', AppColors.textSecondary),
+                  _settingsTile(
+                    Icons.help_outline,
+                    'Help & Support',
+                    AppColors.accent,
+                  ),
+                  _settingsTile(
+                    Icons.star,
+                    'Rate FitTrack',
+                    AppColors.accentYellow,
+                  ),
+                  _settingsTile(
+                    Icons.description,
+                    'Terms of Service',
+                    AppColors.textSecondary,
+                  ),
                   const SizedBox(height: 8),
                   const Center(
-                    child: Text('FitTrack v1.0.0', style: TextStyle(color: AppColors.textMuted, fontSize: 12)),
+                    child: Text(
+                      'FitTrack v1.0.0',
+                      style: TextStyle(
+                        color: AppColors.textMuted,
+                        fontSize: 12,
+                      ),
+                    ),
                   ),
                 ],
               ),
@@ -157,10 +223,15 @@ class ProfileScreen extends StatelessWidget {
                 child: OutlinedButton.icon(
                   onPressed: () => _showLogoutDialog(context),
                   icon: const Icon(Icons.logout, color: Colors.redAccent),
-                  label: const Text('Log Out', style: TextStyle(color: Colors.redAccent, fontSize: 15)),
+                  label: const Text(
+                    'Log Out',
+                    style: TextStyle(color: Colors.redAccent, fontSize: 15),
+                  ),
                   style: OutlinedButton.styleFrom(
                     side: const BorderSide(color: Colors.redAccent),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
                   ),
                 ),
               ),
@@ -175,14 +246,30 @@ class ProfileScreen extends StatelessWidget {
   Widget _profileStat(String value, String label) {
     return Column(
       children: [
-        Text(value, style: const TextStyle(color: Colors.white, fontSize: 22, fontWeight: FontWeight.bold)),
+        Text(
+          value,
+          style: const TextStyle(
+            color: Colors.white,
+            fontSize: 22,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
         const SizedBox(height: 2),
-        Text(label, style: const TextStyle(color: AppColors.textSecondary, fontSize: 12)),
+        Text(
+          label,
+          style: const TextStyle(color: AppColors.textSecondary, fontSize: 12),
+        ),
       ],
     );
   }
 
-  Widget _goalRow(IconData icon, String label, String value, Color color, double progress) {
+  Widget _goalRow(
+    IconData icon,
+    String label,
+    String value,
+    Color color,
+    double progress,
+  ) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8),
       child: Column(
@@ -191,8 +278,19 @@ class ProfileScreen extends StatelessWidget {
             children: [
               Icon(icon, color: color, size: 18),
               const SizedBox(width: 10),
-              Expanded(child: Text(label, style: const TextStyle(color: Colors.white, fontSize: 14))),
-              Text(value, style: const TextStyle(color: AppColors.textSecondary, fontSize: 13)),
+              Expanded(
+                child: Text(
+                  label,
+                  style: const TextStyle(color: Colors.white, fontSize: 14),
+                ),
+              ),
+              Text(
+                value,
+                style: const TextStyle(
+                  color: AppColors.textSecondary,
+                  fontSize: 13,
+                ),
+              ),
             ],
           ),
           const SizedBox(height: 6),
@@ -208,7 +306,12 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
-  Widget _settingsTile(IconData icon, String label, Color color, {Widget? trailing}) {
+  Widget _settingsTile(
+    IconData icon,
+    String label,
+    Color color, {
+    Widget? trailing,
+  }) {
     return ListTile(
       contentPadding: EdgeInsets.zero,
       leading: Container(
@@ -220,8 +323,13 @@ class ProfileScreen extends StatelessWidget {
         ),
         child: Icon(icon, color: color, size: 18),
       ),
-      title: Text(label, style: const TextStyle(color: Colors.white, fontSize: 14)),
-      trailing: trailing ?? const Icon(Icons.chevron_right, color: AppColors.textMuted),
+      title: Text(
+        label,
+        style: const TextStyle(color: Colors.white, fontSize: 14),
+      ),
+      trailing:
+          trailing ??
+          const Icon(Icons.chevron_right, color: AppColors.textMuted),
       onTap: () {},
     );
   }
@@ -240,11 +348,17 @@ class ProfileScreen extends StatelessWidget {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('Cancel', style: TextStyle(color: AppColors.textSecondary)),
+            child: const Text(
+              'Cancel',
+              style: TextStyle(color: AppColors.textSecondary),
+            ),
           ),
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('Log Out', style: TextStyle(color: Colors.redAccent)),
+            child: const Text(
+              'Log Out',
+              style: TextStyle(color: Colors.redAccent),
+            ),
           ),
         ],
       ),
@@ -257,7 +371,11 @@ class _Section extends StatelessWidget {
   final IconData icon;
   final List<Widget> children;
 
-  const _Section({required this.title, required this.icon, required this.children});
+  const _Section({
+    required this.title,
+    required this.icon,
+    required this.children,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -277,7 +395,11 @@ class _Section extends StatelessWidget {
               const SizedBox(width: 8),
               Text(
                 title,
-                style: const TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.bold),
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 15,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ],
           ),
